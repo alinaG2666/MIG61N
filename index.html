@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Волонтёрская организация «МИГ61» при МЧС</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Волонтёрская организация «МИГ61» при МЧС</h1>
+    <p>Присоединяйтесь к команде спасателей и помогайте людям в чрезвычайных ситуациях!</p>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2>Анкета волонтёра-спасателя</h2>
+      <form id="volunteerForm">
+        <div class="form-group">
+          <label for="fullName">Полное имя *</label>
+          <input type="text" id="fullName" name="fullName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="age">Возраст *</label>
+          <input type="number" id="age" name="age" min="18" max="99" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Телефон *</label>
+          <input type="tel" id="phone" name="phone" placeholder="+7 (XXX) XXX-XX-XX" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="city">Город проживания *</label>
+          <input type="text" id="city" name="city" required>
+        </div>
+
+        <div class="form-group">
+          <label for="education">Образование *</label>
+          <select id="education" name="education" required>
+            <option value="">Выберите вариант</option>
+            <option value="secondary">Среднее</option>
+            <option value="specialized">Среднее специальное</option>
+            <option value="incomplete-higher">Незаконченное высшее</option>
+            <option value="higher">Высшее</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="specialization">Специальность/направление обучения</label>
+          <input type="text" id="specialization" name="specialization">
+        </div>
+
+        <div class="form-group">
+          <label for="experience">Опыт волонтёрской деятельности</label>
+          <textarea id="experience" name="experience" rows="3" placeholder="Опишите ваш опыт участия в волонтёрских проектах, особенно связанных с ЧС"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="rescue-experience">Опыт работы/обучения в сфере спасения</label>
+          <textarea id="rescue-experience" name="rescue-experience" rows="3" placeholder="Проходили ли курсы спасателей? Участвовали в ликвидации ЧС? Укажите детали"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="skills">Навыки, полезные для спасательных работ</label>
+          <textarea id="skills" name="skills" rows="4" placeholder="Первая помощь, работа с оборудованием, навигация, психологическая поддержка и т. д."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="availability">Доступность для выездов</label>
+          <select id="availability" name="availability">
+            <option value="">Выберите вариант</option>
+            <option value="immediate">Готов выезжать немедленно</option>
+            <option value="within-2h">В течение 2 часов</option>
+            <option value="weekends">Только по выходным</option>
+            <option value="specific-days">В определённые дни недели</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Согласие на обработку персональных данных *</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="agreement" value="agree" required> Я даю согласие на обработку моих персональных данных</label>
+          </div>
+        </div>
+
+        <button type="submit">Отправить заявку</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>«МИГ61» — вместе мы спасаем жизни!</p>
+  </footer>
+  
+  <script>
+document.getElementById('volunteerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+
+  fetch('send.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    alert('Заявка отправлена! Спасибо!');
+    this.reset();
+  })
+  .catch(error => {
+    console.error('Ошибка:', error);
+    alert('Произошла ошибка, попробуйте ещё раз.');
+  });
+});
+</script>
+
+<script>
+document.getElementById('volunteerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const data = {};
+  for (let [key, value] of formData.entries()) {
+    data[key] = value;
+  }
+  data.timestamp = new Date().toLocaleString('ru-RU');
+
+  // Сохраняем в localStorage
+  const applications = JSON.parse(localStorage.getItem('mig61_applications') || '[]');
+  applications.push(data);
+  localStorage.setItem('mig61_applications', JSON.stringify(applications));
+
+  alert('Заявка отправлена! Спасибо!');
+  this.reset();
+});
+</script>
+
+</body>
+</html>
